@@ -22,8 +22,11 @@ requirements:
     - {{ compiler('gfortran') }}
 
     - gnuconfig
-    - cmake
     - make
+    - cmake
+    - automake
+    - autoconf
+    - libtool
 
   host:
     - hepmc
