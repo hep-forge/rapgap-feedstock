@@ -1,8 +1,7 @@
 {% set versions = {
-  "3.308": "022f74403282b0f35e44af12c65321c9515b9d358572da786a0aa630449e22e1"
-#  "3.302": "84634ffa6fb89b33c5f12aa5227d65543b61a2ba7a374ca1681f8bb563e12662" using pythia6
+  "3.4.00": "114f77b9fad95ee9fb95a5104a04e8498b65a98a",
+  "3.3.10": "5c37f255e9957d1fe6c66124c1f28ec4a8baa672"
 } %}
-
 
 {% set version = environ.get('COMMIT_VERSION', None) %}
 {% set version = version or versions.keys()|first %}
@@ -13,10 +12,8 @@ package:
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
 source:
-  url: "https://rapgap.hepforge.org/downloads/?f=rapgap-{{ version }}.tar.gz"
-  {% if versions.get(version, None) %}
-  sha256: {{ versions.get(version) }}
-  {% endif %}
+  git_url: "https://gitlab.cern.ch/jung/rapgap/-/tags"
+  git_rev: {{ versions.get(version, "HEAD") }}
 
 requirements:
   build:
