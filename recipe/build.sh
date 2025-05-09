@@ -6,7 +6,7 @@
 if [ -f "CMakeLists.txt" ]; then
   mkdir build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
+  cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_CXX_STANDARD=17
 else
   ./configure --prefix=$PREFIX --with-hepmc=$PREFIX
 fi
