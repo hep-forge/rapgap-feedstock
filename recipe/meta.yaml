@@ -23,7 +23,7 @@ requirements:
 
     - gnuconfig
     - make
-    - cmake
+    - cmake<4
     - automake
     - autoconf
     - libtool
