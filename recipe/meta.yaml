@@ -30,13 +30,11 @@ requirements:
 
   host:
     - hepmc
-    - rivet
     - lhapdf
     - pythia
 
   run:
     - hepmc
-    - rivet
     - lhapdf
     - pythia
 
