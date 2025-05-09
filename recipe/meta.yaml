@@ -1,0 +1,52 @@
+{% set versions = {
+  "3.308": "022f74403282b0f35e44af12c65321c9515b9d358572da786a0aa630449e22e1"
+#  "3.302": "84634ffa6fb89b33c5f12aa5227d65543b61a2ba7a374ca1681f8bb563e12662" using pythia6
+} %}
+
+
+{% set version = environ.get('COMMIT_VERSION', None) %}
+{% set version = version or versions.keys()|first %}
+{% set version = version|string %}
+
+package:
+  name: {{ environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower }}
+  version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
+
+source:
+  url: "https://rapgap.hepforge.org/downloads/?f=rapgap-{{ version }}.tar.gz"
+  {% if versions.get(version, None) %}
+  sha256: {{ versions.get(version) }}
+  {% endif %}
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - {{ compiler('c') }}
+    - {{ compiler('gfortran') }}
+
+    - gnuconfig
+    - cmake
+    - make
+
+  host:
+    - hepmc
+    - rivet
+    - lhapdf
+    - pythia
+
+  run:
+    - hepmc
+    - rivet
+    - lhapdf
+    - pythia
+
+about:
+  home: "https://rapgap.hepforge.org"
+  license: "GPL-3.0"
+  summary: "Hadron level Monte Carlo generator for ep and selected processes in pp scattering"
+  description: |
+    The Monte Carlo program RAPGAP generates a full hadron event record according to the HEP common standards. In ep it can describe all inclusive and diffractive processes, in pp it is available for single-diffractive and a few inclusive processes for heavy quark and jet production.
+
+extra:
+  recipe-maintainers:
+    - meiyasan
