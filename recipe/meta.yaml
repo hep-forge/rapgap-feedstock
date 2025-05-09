@@ -1,6 +1,6 @@
 {% set versions = {
   "3.4.0": "114f77b9fad95ee9fb95a5104a04e8498b65a98a",
-  "3.3.10": "5c37f255e9957d1fe6c66124c1f28ec4a8baa672"
+  "3.310": "5c37f255e9957d1fe6c66124c1f28ec4a8baa672"
 } %}
 
 {% set version = environ.get('COMMIT_VERSION', None) %}
@@ -12,7 +12,7 @@ package:
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
 source:
-  git_url: "https://gitlab.cern.ch/jung/rapgap/-/tags"
+  git_url: "https://gitlab.cern.ch/jung/rapgap"
   git_rev: {{ versions.get(version, "HEAD") }}
 
 requirements:
