@@ -51,7 +51,7 @@ jobs:
         name: Set Package Name, Version and Label
         run: |
           [ -n "$COMMIT_TYPE" ] && COMMIT_TYPE="-$COMMIT_TYPE"
-          [[ $COMMIT_VERSION == *-* ]] && ANACONDA_LABEL=${COMMIT_VERSION#*-} || ANACONDA_LABEL=""
+          [[ $COMMIT_VERSION == *-* ]] && ANACONDA_LABEL=${COMMIT_VERSION#*-} || ANACONDA_LABEL="$GITHUB_REF_NAME"
 
           ANACONDA_PACKAGE=$(basename `git rev-parse --show-toplevel` | sed 's,-feedstock,,g')
           echo "ANACONDA_PACKAGE=$ANACONDA_PACKAGE" >> $GITHUB_ENV
