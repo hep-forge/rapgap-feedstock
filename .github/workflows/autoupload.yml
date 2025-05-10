@@ -51,7 +51,6 @@ jobs:
         name: Set Package Name, Version and Label
         run: |
           [ -n "$COMMIT_TYPE" ] && COMMIT_TYPE="-$COMMIT_TYPE"
-          echo $COMMIT_VERSION
           [[ $COMMIT_VERSION == *-* ]] && ANACONDA_LABEL=${COMMIT_VERSION#*-} || ANACONDA_LABEL=""
 
           ANACONDA_PACKAGE=$(basename `git rev-parse --show-toplevel` | sed 's,-feedstock,,g')
@@ -63,6 +62,7 @@ jobs:
           echo "ANACONDA_LABEL=$ANACONDA_LABEL" >> $GITHUB_OUTPUT
 
           ANACONDA_VERSION=${COMMIT_VERSION//-/.}
+          ANACONDA_VERSION=${ANACONDA_VERSION//.${ANACONDA_LABEL}/}
           ANACONDA_VERSION=${ANACONDA_VERSION:-0.0.0}${COMMIT_TYPE//-/.}
           echo "ANACONDA_VERSION=$ANACONDA_VERSION" >> $GITHUB_ENV
           echo "ANACONDA_VERSION=$ANACONDA_VERSION" >> $GITHUB_OUTPUT
