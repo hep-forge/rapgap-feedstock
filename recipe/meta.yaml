@@ -1,6 +1,5 @@
 {% set versions = {
-  "3.4.0": "114f77b9fad95ee9fb95a5104a04e8498b65a98a",
-  "3.310": "5c37f255e9957d1fe6c66124c1f28ec4a8baa672"
+  "3.302": "HEAD"
 } %}
 
 {% set version = environ.get('COMMIT_VERSION', None) %}
@@ -12,7 +11,7 @@ package:
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
 source:
-  git_url: "https://gitlab.cern.ch/jung/rapgap"
+  git_url: "https://gitlab.com/eic/mceg/RAPGAP-3.302"
   git_rev: {{ versions.get(version, "HEAD") }}
 
 requirements:
@@ -23,7 +22,6 @@ requirements:
 
     - gnuconfig
     - make
-    - cmake<4
     - automake
     - autoconf
     - libtool
@@ -39,8 +37,8 @@ requirements:
     - pythia
 
 about:
-  home: "https://rapgap.hepforge.org"
-  license: "GPL-3.0"
+  home: "https://gitlab.com/eic/mceg/RAPGAP-3.302"
+  license: "MIT"
   summary: "Hadron level Monte Carlo generator for ep and selected processes in pp scattering"
   description: |
     The Monte Carlo program RAPGAP generates a full hadron event record according to the HEP common standards. In ep it can describe all inclusive and diffractive processes, in pp it is available for single-diffractive and a few inclusive processes for heavy quark and jet production.

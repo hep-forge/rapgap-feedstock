@@ -27,8 +27,8 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-          
-      - id: git 
+
+      - id: git
         name: Fetch Git Repository Information
         run: |
           COMMIT_SHA=$(git rev-parse HEAD || exit 1)
@@ -63,6 +63,7 @@ jobs:
           echo "ANACONDA_LABEL=$ANACONDA_LABEL" >> $GITHUB_OUTPUT
 
           ANACONDA_VERSION=${COMMIT_VERSION//-/.}
+          ANACONDA_VERSION=${ANACONDA_VERSION//.${ANACONDA_LABEL}/}
           ANACONDA_VERSION=${ANACONDA_VERSION:-0.0.0}${COMMIT_TYPE//-/.}
           echo "ANACONDA_VERSION=$ANACONDA_VERSION" >> $GITHUB_ENV
           echo "ANACONDA_VERSION=$ANACONDA_VERSION" >> $GITHUB_OUTPUT
