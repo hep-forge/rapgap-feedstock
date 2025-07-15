@@ -39,14 +39,16 @@ requirements:
     - hepmc
     - lhapdf
     - pythia
-    -rapgap
+    - rapgap
 
 about:
   home: "https://rapgap.hepforge.org"
   license: "GPL-3.0"
   summary: "Hadron level Monte Carlo generator for ep and selected processes in pp scattering"
   description: |
-    The Monte Carlo program RAPGAP generates a full hadron event record according to the HEP common standards. In ep it can describe all inclusive and diffractive processes, in pp it is available for single-diffractive and a few inclusive processes for heavy quark and jet production.
+    The Monte Carlo program RAPGAP generates a full hadron event record according to the HEP common standards. 
+    In ep it can describe all inclusive and diffractive processes, in pp it is available for single-diffractive
+    and a few inclusive processes for heavy quark and jet production.
 
 extra:
   recipe-maintainers:
