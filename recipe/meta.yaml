@@ -33,13 +33,13 @@ requirements:
     - hepmc
     - lhapdf
     - pythia
-    - rapgap
+    - rivet
 
   run:
     - hepmc
     - lhapdf
     - pythia
-    - rapgap
+    - rivet
 
 about:
   home: "https://rapgap.hepforge.org"
