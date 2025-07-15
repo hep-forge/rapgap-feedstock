@@ -17,6 +17,7 @@ source:
 
 requirements:
   build:
+    - python
     - {{ compiler('cxx') }}
     - {{ compiler('c') }}
     - {{ compiler('gfortran') }}
@@ -32,11 +33,13 @@ requirements:
     - hepmc
     - lhapdf
     - pythia
+    - rapgap
 
   run:
     - hepmc
     - lhapdf
     - pythia
+    -rapgap
 
 about:
   home: "https://rapgap.hepforge.org"
