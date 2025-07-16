@@ -8,6 +8,7 @@ if [ -f "CMakeLists.txt" ]; then
   cd build
   cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_CXX_STANDARD=17
 else
+  CXXFLAGS="-std=c++17"
   ./configure --prefix=$PREFIX --with-hepmc=$PREFIX
 fi
 
