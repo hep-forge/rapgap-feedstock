@@ -11,6 +11,10 @@ package:
   name: {{ environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
+build:
+  number: 0
+  string: "root{{ root.replace('.', '') }}"
+
 source:
   git_url: "https://gitlab.cern.ch/jung/rapgap"
   git_rev: {{ versions.get(version, "HEAD") }}
