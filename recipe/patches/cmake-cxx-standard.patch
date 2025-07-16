@@ -1,0 +1,26 @@
+From ebf7f6a66eed62af294534daeffde2423064dc9a Mon Sep 17 00:00:00 2001
+From: Marco Meyer-Conde <marco@tcu.ac.jp>
+Date: Wed, 16 Jul 2025 23:49:13 +0900
+Subject: [PATCH] stdcxx
+
+---
+ CMakeLists.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fc1b854..45a5ed8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -455,6 +455,10 @@ if (RAPGAP_RIVET AND RIVET_FOUND)
+     set_property(TARGET rapgap PROPERTY CXX_STANDARD 14)
+ endif()
+ 
++if (CMAKE_CXX_STANDARD)
++    set_property(TARGET rapgap PROPERTY CXX_STANDARD ${CMAKE_CXX_STANDARD})
++endif()
++
+ ## MANUAL  #############################################################
+ if (RAPGAP_BUILD_DOCS AND LATEX_FOUND AND LATEX_PDFLATEX_FOUND AND LATEX_MAKEINDEX_FOUND)
+   set( manual_sources 
+-- 
+2.34.1

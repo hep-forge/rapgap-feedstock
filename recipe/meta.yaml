@@ -18,6 +18,8 @@ build:
 source:
   git_url: "https://gitlab.cern.ch/jung/rapgap"
   git_rev: {{ versions.get(version, "HEAD") }}
+  patches:
+    - patches/cmake-cxx-standard.patch
 
 requirements:
   build:
