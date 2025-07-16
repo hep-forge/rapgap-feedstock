@@ -39,13 +39,13 @@ requirements:
     - hepmc
     - lhapdf
     - pythia
-    - rivet
+    - rivet<4
 
   run:
     - hepmc
     - lhapdf
     - pythia
-    - rivet
+    - rivet<4
 
 about:
   home: "https://rapgap.hepforge.org"
