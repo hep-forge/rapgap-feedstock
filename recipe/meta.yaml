@@ -21,9 +21,10 @@ source:
 
 requirements:
   build:
+    - {{ compiler('gfortran') }}
     - {{ compiler('cxx') }}
     - {{ compiler('c') }}
-    - {{ compiler('gfortran') }}
+    - {{ stdlib('c') }}
 
     - gnuconfig
     - make
