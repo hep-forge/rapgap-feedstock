@@ -23,11 +23,7 @@ source:
 
 requirements:
   build:
-    - {{ compiler('gfortran') }}
-    - {{ compiler('cxx') }}
-    - {{ compiler('c') }}
-    - {{ stdlib('c') }}
-
+    - root {{ root }}.*
     - gnuconfig
     - make
     - cmake<4
@@ -36,16 +32,15 @@ requirements:
     - libtool
 
   host:
-    - hepmc
+    - hepmc * root{{ root.replace('.', '') }}
+    - rivet<4 root{{ root.replace('.', '') }}
     - lhapdf
     - pythia
-    - rivet<4
-
   run:
-    - hepmc
+    - hepmc * root{{ root.replace('.', '') }}
+    - rivet<4 root{{ root.replace('.', '') }}
     - lhapdf
     - pythia
-    - rivet<4
 
 about:
   home: "https://rapgap.hepforge.org"
