@@ -25,7 +25,7 @@ requirements:
   build:
     - root {{ root }}.*
 　　 - sysroot
-    - {{ stdlib('c') }}}
+    - {{ stdlib('c') }}
     - gnuconfig
     - make
     - cmake<4
