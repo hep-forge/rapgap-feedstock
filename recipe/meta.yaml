@@ -10,16 +10,20 @@ package:
   name: {{ environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
+build:
+  number: 0
+  string: "root{{ root.replace('.', '') }}"
+
 source:
   git_url: "https://gitlab.com/eic/mceg/RAPGAP-3.302"
   git_rev: {{ versions.get(version, "HEAD") }}
+  patches:
+    - patches/cmake-cxx-standard.patch
 
 requirements:
   build:
-    - {{ compiler('cxx') }}
-    - {{ compiler('c') }}
-    - {{ compiler('gfortran') }}
-
+    - root {{ root }}.*
+    - {{ stdlib("c") }}
     - gnuconfig
     - make
     - automake
@@ -27,12 +31,13 @@ requirements:
     - libtool
 
   host:
-    - hepmc
+    - hepmc * root{{ root.replace('.', '') }}
+    - rivet<4 root{{ root.replace('.', '') }}
     - lhapdf
     - pythia
-
   run:
-    - hepmc
+    - hepmc * root{{ root.replace('.', '') }}
+    - rivet<4 root{{ root.replace('.', '') }}
     - lhapdf
     - pythia
 
@@ -41,7 +46,9 @@ about:
   license: "MIT"
   summary: "Hadron level Monte Carlo generator for ep and selected processes in pp scattering"
   description: |
-    The Monte Carlo program RAPGAP generates a full hadron event record according to the HEP common standards. In ep it can describe all inclusive and diffractive processes, in pp it is available for single-diffractive and a few inclusive processes for heavy quark and jet production.
+    The Monte Carlo program RAPGAP generates a full hadron event record according to the HEP common standards. 
+    In ep it can describe all inclusive and diffractive processes, in pp it is available for single-diffractive
+    and a few inclusive processes for heavy quark and jet production.
 
 extra:
   recipe-maintainers:
