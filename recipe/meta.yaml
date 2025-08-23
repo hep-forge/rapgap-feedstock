@@ -17,8 +17,6 @@ build:
 source:
   git_url: "https://gitlab.com/eic/mceg/RAPGAP-3.302"
   git_rev: {{ versions.get(version, "HEAD") }}
-  patches:
-    - patches/cmake-cxx-standard.patch
 
 requirements:
   build:
