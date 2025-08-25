@@ -7,6 +7,11 @@
 {% set version = version or versions.keys()|first %}
 {% set version = version|string %}
 
+{% set parts = version.split('.') | map('int') | list %}
+{% set major = parts[0] %}
+{% set minor = parts[1] if parts|length > 1 else 0 %}
+{% set patch = parts[2] if parts|length > 2 else 0 %}
+
 package:
   name: {{ environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
@@ -18,13 +23,15 @@ build:
 source:
   git_url: "https://gitlab.cern.ch/jung/rapgap"
   git_rev: {{ versions.get(version, "HEAD") }}
+{% if minor != 310 %}
   patches:
     - patches/cmake-cxx-standard.patch
+{% endif %}
 
 requirements:
   build:
     - root {{ root }}.*
-    - {{ stdlib("c") }}
+    - {{ compiler("fortran") }}
     - gnuconfig
     - make
     - cmake<4
