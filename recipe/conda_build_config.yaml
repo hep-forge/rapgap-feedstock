@@ -8,7 +8,7 @@ c_stdlib_version:
 
 root:
   - 6.32
-  - 6.34
+#  - 6.34 # removed due to root_py311_gcc15 (3.11 not available) < yoda < rivet
 
 zip_keys:
   - root
