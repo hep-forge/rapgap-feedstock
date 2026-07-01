@@ -15,10 +15,11 @@
 package:
   name: {{ environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
+{% set root_tag = (root or '')|replace('.', '') %}
 
 build:
   number: 0
-  string: "root{{ root.replace('.', '') }}"
+  string: "root{{ root_tag }}"
   run_exports:
     - {{ pin_subpackage(name, max_pin="x.x.x") }}
 
@@ -42,13 +43,13 @@ requirements:
     - libtool
 
   host:
-    - hepmc * root{{ root.replace('.', '') }}
-    - rivet<4 root{{ root.replace('.', '') }}
+    - hepmc * root{{ root_tag }}
+    - rivet<4 root{{ root_tag }}
     - lhapdf
     - pythia
   run:
-    - hepmc * root{{ root.replace('.', '') }}
-    - rivet<4 root{{ root.replace('.', '') }}
+    - hepmc * root{{ root_tag }}
+    - rivet<4 root{{ root_tag }}
     - lhapdf
     - pythia
 
