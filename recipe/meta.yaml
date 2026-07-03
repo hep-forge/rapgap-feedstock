@@ -12,8 +12,10 @@
 {% set minor = parts[1] if parts|length > 1 else 0 %}
 {% set patch = parts[2] if parts|length > 2 else 0 %}
 
+{% set name = environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower %}
+
 package:
-  name: {{ environ.get('ANACONDA_PACKAGE', "rapgap")|string|lower }}
+  name: {{ name }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 {% set root_tag = (root or '')|replace('.', '') %}
 
