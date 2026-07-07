@@ -7,12 +7,11 @@ c_stdlib_version:
   - 11.0  # [osx]
 
 root:
-  # 6.36 dropped: hepmc-feedstock stopped building hepmc for root636
-  # (never had an aarch64 build for that slot; see hepmc-feedstock's
-  # own conda_build_config.yaml), so this variant was unconditionally
-  # unsatisfiable on arm64. rivet<4 (3.1.11) is only published for
-  # root634 anyway, so 6.34 is the only variant that actually solves.
-  - 6.34
+  # 6.34 dropped in turn: rivet<4 (3.1.11) now also publishes against
+  # root638 (both arches), so rapgap moves onto the same line as the rest
+  # of the channel's non-legacy packages -- lets it coexist with
+  # root-plus/escalade/etc. in one environment.
+  - 6.38
 
 packages:
   - numpy
