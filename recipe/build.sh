@@ -10,7 +10,13 @@ export CXXFLAGS="-std=c++${ROOT_CXX_STANDARD} ${CXXFLAGS:-}"
 if [ -f "CMakeLists.txt" ]; then
   mkdir -p build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_CXX_STANDARD=${ROOT_CXX_STANDARD}
+  # ${CMAKE_ARGS} carries conda-build's own -DCMAKE_BUILD_TYPE=Release
+  # (plus toolchain/strip paths) -- this cmake invocation omitted it
+  # entirely, so CMAKE_BUILD_TYPE stayed unset (rapgap's own
+  # CMakeLists.txt never defaults it either), producing an unoptimized,
+  # unstripped debug-info binary. Every other cmake-based build.sh in
+  # this fleet interpolates ${CMAKE_ARGS} for exactly this reason.
+  cmake .. ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_CXX_STANDARD=${ROOT_CXX_STANDARD}
 else
   ./configure --prefix="$PREFIX" --with-hepmc="$PREFIX" CXXFLAGS="$CXXFLAGS"
 fi
