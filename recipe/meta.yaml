@@ -41,6 +41,16 @@ source:
 
 requirements:
   build:
+    # Only the Fortran compiler was declared, but this package also
+    # compiles C++ (its published artifact carries a libstdcxx run
+    # dependency), so that half was built by whatever toolchain happened
+    # to exist on the CI runner rather than a conda one. c_stdlib and
+    # c_stdlib_version were inert too -- they apply only through a
+    # {{ stdlib('c') }} reference -- so the sysroot 2.17 ABI floor this
+    # feedstock appeared to have never reached its binaries.
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
     - root {{ root }}.*
     - {{ compiler("fortran") }}
     - gnuconfig
