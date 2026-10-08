@@ -9,18 +9,18 @@ index 0000000..def3474
 +      DOUBLE PRECISION QLAMQCD
 +      COMMON/RGLAMQ/QLAMQCD
 diff --git a/src/rapgap/rapcha.F b/src/rapgap/rapcha.F
-index ab3eb02..8a9ea75 100644
+index 9a3648e..359f6e6 100644
 --- a/src/rapgap/rapcha.F
 +++ b/src/rapgap/rapcha.F
-@@ -26,6 +26,7 @@
- #include "rgluco.inc"
+@@ -27,6 +27,7 @@
  #include "rgpart.inc"
  #include "rgdiffr.inc"
+ #include "rgpiflux.inc"
 +#include "rglamqcd.inc"
  #include "rgdisdif.inc"
  #include "rgfull.inc"
  #include "rgscq2.inc"
-@@ -650,6 +651,15 @@ c		write(6,*) ' params', param,int,rea,cea
+@@ -696,6 +697,15 @@ c		write(6,*) ' params', param,int,rea,cea
                    PRINT 10400, PARAM,LND,RDEF,REA
                 ENDIF
              ENDIF
