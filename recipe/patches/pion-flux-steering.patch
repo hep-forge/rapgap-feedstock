@@ -1,0 +1,170 @@
+diff --git a/include/rgpiflux.inc b/include/rgpiflux.inc
+new file mode 100644
+index 0000000..fa73370
+--- /dev/null
++++ b/include/rgpiflux.inc
+@@ -0,0 +1,14 @@
++C Pion-exchange flux (IPOM = 20, 21, 22), set from the steering file:
++C   IPFF  form factor: 0 light-cone, Holtmann et al. PLB 338 (1994) 363
++C                         (default, exp(R^2 (t - m_pi^2)/(1 - x_L)), R = PIRN)
++C                      1 Regge: (1 - x_L)^(-2 alpha' t) exp(2 (t - m_pi^2)/lambda^2)
++C                         (lambda = PILM, alpha' = PIAL)
++C                      2 monopole, 3 dipole, 4 exponential (fixed scales,
++C                         Frankfurt, Mankiewicz, Strikman, Z.Phys. A 334 (1989) 343)
++C   PIRN  light-cone radius R [GeV^-1]          (default 0.93)
++C   PIGP  g^2/4pi of the pi N N coupling       (default 13.5)
++C   PILM  Regge cutoff lambda [GeV]            (default 0.65)
++C   PIAL  Regge slope alpha' [GeV^-2]          (default 1.0)
++      INTEGER IPIFF
++      DOUBLE PRECISION PIRN,PIGPP,PILAM,PIALP
++      COMMON/PIFLUX/PIRN,PIGPP,PILAM,PIALP,IPIFF
+diff --git a/src/rapgap/rapcha.F b/src/rapgap/rapcha.F
+index ab3eb02..9a3648e 100644
+--- a/src/rapgap/rapcha.F
++++ b/src/rapgap/rapcha.F
+@@ -26,6 +26,7 @@
+ #include "rgluco.inc"
+ #include "rgpart.inc"
+ #include "rgdiffr.inc"
++#include "rgpiflux.inc"
+ #include "rgdisdif.inc"
+ #include "rgfull.inc"
+ #include "rgscq2.inc"
+@@ -283,6 +284,15 @@ c		write(6,*) ' params', param,int,rea,cea
+                   PRINT 10200, PARAM,LND,IDEF,INT
+                ENDIF
+             ENDIF
++            IF (PARAM.EQ.'IPFF') THEN
++               IDEF = IPIFF
++               IF (ABS(IDEF-INT).GT.EPSMAC) THEN
++                  IPIFF = INT
++                  PRINT 10100, PARAM,LND,IDEF,INT
++               ELSE
++                  PRINT 10200, PARAM,LND,IDEF,INT
++               ENDIF
++            ENDIF
+             IF (PARAM.EQ.'IVME') THEN
+                IDEF = IVM
+                IF (ABS(IDEF-INT).GT.EPSMAC) THEN
+@@ -650,6 +660,42 @@ c		write(6,*) ' params', param,int,rea,cea
+                   PRINT 10400, PARAM,LND,RDEF,REA
+                ENDIF
+             ENDIF
++            IF (PARAM.EQ.'PIRN') THEN
++               RDEF = SNGL(PIRN)
++               IF (ABS(RDEF-REA).GT.EPSMAC) THEN
++                  PIRN = DBLE(REA)
++                  PRINT 10300, PARAM,LND,RDEF,REA
++               ELSE
++                  PRINT 10400, PARAM,LND,RDEF,REA
++               ENDIF
++            ENDIF
++            IF (PARAM.EQ.'PIGP') THEN
++               RDEF = SNGL(PIGPP)
++               IF (ABS(RDEF-REA).GT.EPSMAC) THEN
++                  PIGPP = DBLE(REA)
++                  PRINT 10300, PARAM,LND,RDEF,REA
++               ELSE
++                  PRINT 10400, PARAM,LND,RDEF,REA
++               ENDIF
++            ENDIF
++            IF (PARAM.EQ.'PILM') THEN
++               RDEF = SNGL(PILAM)
++               IF (ABS(RDEF-REA).GT.EPSMAC) THEN
++                  PILAM = DBLE(REA)
++                  PRINT 10300, PARAM,LND,RDEF,REA
++               ELSE
++                  PRINT 10400, PARAM,LND,RDEF,REA
++               ENDIF
++            ENDIF
++            IF (PARAM.EQ.'PIAL') THEN
++               RDEF = SNGL(PIALP)
++               IF (ABS(RDEF-REA).GT.EPSMAC) THEN
++                  PIALP = DBLE(REA)
++                  PRINT 10300, PARAM,LND,RDEF,REA
++               ELSE
++                  PRINT 10400, PARAM,LND,RDEF,REA
++               ENDIF
++            ENDIF
+             IF (PARAM.EQ.'RRN2') THEN
+                RDEF = SNGL(RN2)
+                IF (ABS(RDEF-REA).GT.EPSMAC) THEN
+diff --git a/src/rapgap/rat2di.F b/src/rapgap/rat2di.F
+index 0a4ae0c..6774135 100644
+--- a/src/rapgap/rat2di.F
++++ b/src/rapgap/rat2di.F
+@@ -10,13 +10,14 @@ C WTDIST = weight of distribution
+ #include "rgdiffr.inc"
+ #include "rgpara.inc"
+ #include "rgpdiss.inc"
++#include "rgpiflux.inc"
+       INTEGER KF
+       DOUBLE PRECISION T2,XR,WTDIST,DELTA2,MP,XE,BETA02,WMOPOL,WDIPOL
+       DOUBLE PRECISION WEXPOL,WEXTHO,WEXPHO
+-      DOUBLE PRECISION GPPPI,mpi,ALAMD,RNHOL
++      DOUBLE PRECISION mpi,ALAMD,WFF
+       LOGICAL FIRST
+       DATA DELTA2/3.26D0/,MP/0.938D0/,FIRST/.TRUE./
+-      DATA GPPPI/13.5/,mpi/0.139/,ALAMD/0.039D0/,RNHOL/0.93/
++      DATA mpi/0.139/,ALAMD/0.039D0/
+       DATA beta02/58.74D0/
+       WTDIST = 0.D0
+ 	wghtt = wtdist
+@@ -68,13 +69,15 @@ c test with Donnachie Landshoff f_pom distribution
+ c         write(6,*) 'rat2di : NPOM=',NPOM
+       ELSEIF(NPOM.EQ.20.OR.NPOM.EQ.21.OR.NPOM.EQ.22) THEN
+          IF(FIRST) THEN
+-            WRITE(6,*) ' pi exchange is used '
++            WRITE(6,*) ' pi exchange is used, flux form factor IPFF=',
++     &         IPIFF,' R=',PIRN,' g2/4pi=',PIGPP,' lambda=',PILAM,
++     &         ' alpha_prime=',PIALP
+             FIRST = .FALSE.
+          ENDIF
+ changed according to B.List/Holtmann
+ cc         WTDIST = -2.D0*GPPPI**2 *XR/16.D0/PI**2 *T2/(T2 - mpi**2)**2
+ changed according to A. Buniatian/Holtmann (22.June 2008)
+-         WTDIST = -2.D0*GPPPI    *XR/4.D0 /PI    *T2/(T2 - mpi**2)**2
++         WTDIST = -2.D0*PIGPP    *XR/4.D0 /PI    *T2/(T2 - mpi**2)**2
+ c different choices for pion t dependence a la Frankfurt Mankiewiecz Strikman
+ c  Z.Phys. A 334 (1989) 343
+ c dipole form factor
+@@ -90,10 +93,25 @@ c exp. form factor
+ c exp form factor from Thomas Phys. Lett. B 126 (1983) 97
+          WEXTHO =  DABS(DEXP(-2.D0*ALAMD *(-T2 + mpi**2)/mpi**2))
+ c exp form factor  from Holtmann et al. Phys. Lett. B338 (1994) 363
+-         WEXPHO = DEXP(RNHOL**2*(T2-mpi**2)/XR)
+-c	   write(6,*) ' rat2di ',wtdist,wexpho,xr,t2,rnhol,mpi
++         WEXPHO = DEXP(PIRN**2*(T2-mpi**2)/XR)
++c the form factor selected by IPFF (steering); 0 = light-cone (as before)
++         IF(IPIFF.EQ.0) THEN
++            WFF = WEXPHO
++         ELSEIF(IPIFF.EQ.1) THEN
++c Regge flux: pion trajectory alpha(t) = alpha' t, exponential cutoff lambda
++            WFF = XR**(-2.D0*PIALP*T2)*DEXP(2.D0*(T2-mpi**2)/PILAM**2)
++         ELSEIF(IPIFF.EQ.2) THEN
++            WFF = WMOPOL
++         ELSEIF(IPIFF.EQ.3) THEN
++            WFF = WDIPOL
++         ELSEIF(IPIFF.EQ.4) THEN
++            WFF = WEXPOL
++         ELSE
++            WRITE(6,*) ' RAT2DI: unknown pion flux form factor IPFF=',IPIFF
++            STOP
++         ENDIF
+ c.....................................................................
+-         WTDIST = WTDIST * WEXPHO
++         WTDIST = WTDIST * WFF
+ 	   wghtt = -99999 ! for p-diss
+ c         write(6,*) 'rat2di : NPOM=',NPOM
+          IF(NPOM.EQ.21) THEN
+@@ -146,3 +164,10 @@ c	write(6,*) ' RAT2DI: ',xr,t2,wtdist
+    10 WTDIST = 0.D0
+       RETURN
+       END
++
++      BLOCK DATA PIFLBD
++C Defaults of the pion-exchange flux (rgpiflux.inc): light-cone, R = 0.93,
++C g^2/4pi = 13.5, i.e. the flux used before these became steerable.
++#include "rgpiflux.inc"
++      DATA PIRN/0.93D0/,PIGPP/13.5D0/,PILAM/0.65D0/,PIALP/1.D0/,IPIFF/0/
++      END

@@ -20,7 +20,7 @@ package:
 {% set root_tag = (root or '')|replace('.', '') %}
 
 build:
-  number: 0
+  number: 1
   string: "root{{ root_tag }}"
   # No ROOT dictionary generation currently, but this links against ROOT
   # and could grow one -- pre-emptive protection against conda-build's
@@ -34,10 +34,13 @@ build:
 source:
   git_url: "https://gitlab.cern.ch/jung/rapgap"
   git_rev: {{ versions.get(version, "HEAD") }}
-{% if minor != 310 %}
   patches:
+{% if minor != 310 %}
     - patches/cmake-cxx-standard.patch
 {% endif %}
+    # Pion-exchange flux from the steering file (IPFF, PIRN, PIGP, PILM,
+    # PIAL; defaults = the former hard-coded light-cone flux, R = 0.93).
+    - patches/pion-flux-steering.patch
 
 requirements:
   build:
