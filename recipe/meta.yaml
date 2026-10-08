@@ -20,7 +20,7 @@ package:
 {% set root_tag = (root or '')|replace('.', '') %}
 
 build:
-  number: 1
+  number: 2
   string: "root{{ root_tag }}"
   # No ROOT dictionary generation currently, but this links against ROOT
   # and could grow one -- pre-emptive protection against conda-build's
@@ -41,6 +41,11 @@ source:
     # Pion-exchange flux from the steering file (IPFF, PIRN, PIGP, PILM,
     # PIAL; defaults = the former hard-coded light-cone flux, R = 0.93).
     - patches/pion-flux-steering.patch
+    # Lambda_QCD for Pythia's alpha_s: 'ILAM' 1 = the set's AlphaS_Lambda4
+    # (or AlphaS_Lambda5 when 'QLAM' >= m_b), computed from its alpha_s when
+    # the info file lacks it; 2 = always solved from the set's alpha_s at
+    # 'QLAM' (default 3 GeV: 4 flavours, as before).
+    - patches/lambda-qcd-from-alphas.patch
 
 requirements:
   build:
