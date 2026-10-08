@@ -1,0 +1,101 @@
+diff --git a/src/rapgap/rapgap.F b/src/rapgap/rapgap.F
+index b10399d..0d65a6c 100644
+--- a/src/rapgap/rapgap.F
++++ b/src/rapgap/rapgap.F
+@@ -1031,9 +1031,9 @@ c         WRITE(6,*) ' NDIM dynamically calculated ',NDIM,NDIMC
+                IF(MSTP(51).GT.10.and.MSTP(51).ne.1001001) THEN
+                   WRITE(6,*) ' p structure function from lhapdf ',
+      &	   	MSTP(51)
+-                  if(ilamqcd.eq.1) then
++                  if(ilamqcd.ge.1) then
+                      write(6,*) ' use Lambda_qcd from proton lhapdf   '
+-                     call GetLam4M(1,0,qcdl4)
++                     call RGLAM4(ilamqcd,qcdl4)
+ c                     call lambdaQCD(4)
+                   write(6,*) ' set 1 ',qcdl4
+ c                  call GetLam4M(2,1,qcdl4)
+@@ -1053,9 +1053,9 @@ c                  write(6,*) ' set 2 ',qcdl4
+                   IF(MSTP(53).GE.0) then
+                   WRITE(6,*) ' pi structure function from lhapdf ',
+      &	   	MSTP(53)
+-                  if(ilamqcd.eq.1) then
++                  if(ilamqcd.ge.1) then
+                      write(6,*) ' use Lambda_qcd from pi lhapdf   '
+-                     call GetLam4M(1,0,qcdl4)
++                     call RGLAM4(ilamqcd,qcdl4)
+                      paru(112) = qcdl4
+                      MSTU(112) = 4
+                   endif
+@@ -1068,9 +1068,9 @@ c                  write(6,*) ' set 2 ',qcdl4
+                IF(MSTP(51).GT.10) THEN
+                   WRITE(6,*) ' p structure function from lhapdf ',
+      &	   	MSTP(51)
+-                  if(ilamqcd.eq.1) then
++                  if(ilamqcd.ge.1) then
+                      write(6,*) ' use Lambda_qcd from proton lhapdf   '
+-                     call GetLam4M(1,0,qcdl4)
++                     call RGLAM4(ilamqcd,qcdl4)
+                      paru(112) = qcdl4
+                      MSTU(112) = 4
+                   endif
+@@ -1080,9 +1080,9 @@ c                  write(6,*) ' set 2 ',qcdl4
+                   IF(MSTP(53).GE.0) then
+                   WRITE(6,*) ' pi structure function from lhapdf ',
+      &	   	MSTP(53)
+-                  if(ilamqcd.eq.1) then
++                  if(ilamqcd.ge.1) then
+                      write(6,*) ' use Lambda_qcd from pi lhapdf   '
+-                     call GetLam4M(1,0,qcdl4)
++                     call RGLAM4(ilamqcd,qcdl4)
+                      paru(112) = qcdl4
+                      MSTU(112) = 4
+                   endif
+@@ -1698,3 +1698,48 @@ c               write(6,*) ' F2_PI ',F2_PI(I,J),XX(I),Q2X(J)
+ 11404 FORMAT(' *       q g --> q g                                 *')
+ 
+       END
++
++      SUBROUTINE RGLAM4(IOPT,QCDL4)
++C Lambda_QCD (4 flavours) for Pythia's alpha_s from the LHAPDF set in slot 1:
++C   IOPT = 1: AlphaS_Lambda4 of the set's info file; when that entry is
++C             missing (LHAPDF returns <= 0) it is computed as for IOPT = 2
++C   IOPT = 2: solved from the set's own alpha_s: Pythia's PYALPS (order
++C             MSTU(111), 4 flavours) equal to alphasPDF at QREF = 3 GeV
++C             (between the charm and bottom thresholds)
++      IMPLICIT NONE
++#include "rgludat1.inc"
++      INTEGER IOPT,IT,MSTU112
++      DOUBLE PRECISION QCDL4,QREF,ASPDF,ALO,AHI,AMID,PAR112
++      DOUBLE PRECISION ALPHASPDFM,PYALPS
++      EXTERNAL ALPHASPDFM,PYALPS
++      PARAMETER (QREF=3.D0)
++      QCDL4 = -1.D0
++      IF(IOPT.EQ.1) THEN
++         CALL GetLam4M(1,0,QCDL4)
++         IF(QCDL4.GT.0.D0) RETURN
++         WRITE(6,*) ' RGLAM4: no AlphaS_Lambda4 in the PDF info file,',
++     &      ' computing it from the set''s alpha_s'
++      ENDIF
++      ASPDF = ALPHASPDFM(1,QREF)
++      PAR112 = PARU(112)
++      MSTU112 = MSTU(112)
++      MSTU(112) = 4
++      ALO = 0.01D0
++      AHI = 1.50D0
++      DO 10 IT = 1, 60
++         AMID = 0.5D0*(ALO+AHI)
++         PARU(112) = AMID
++         IF(PYALPS(QREF**2).GT.ASPDF) THEN
++            AHI = AMID
++         ELSE
++            ALO = AMID
++         ENDIF
++   10 CONTINUE
++      QCDL4 = 0.5D0*(ALO+AHI)
++      PARU(112) = PAR112
++      MSTU(112) = MSTU112
++      WRITE(6,*) ' RGLAM4: Lambda_QCD(nf=4) =',QCDL4,
++     &   ' from alpha_s(',QREF,' GeV) =',ASPDF,' of the PDF set,',
++     &   ' Pythia alpha_s order',MSTU(111)
++      RETURN
++      END
