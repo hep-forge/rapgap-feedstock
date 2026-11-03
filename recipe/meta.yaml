@@ -72,13 +72,16 @@ requirements:
     - hepmc * root{{ root_tag }}
     - rivet<4 root{{ root_tag }}
     - lhapdf
-    - pythia
+    # pythia on Linux; on macOS ROOT is conda-forge's, which needs conda-forge's
+    # pythia8 (hep-forge pythia declares pythia8 <0 and cannot sit next to it)
+    - pythia  # [linux]
+    - pythia8 >=8.3  # [osx]
   run:
     - hepmc * root{{ root_tag }}
     - rivet<4 root{{ root_tag }}
     - lhapdf
-    - pythia
-
+    - pythia  # [linux]
+    - pythia8 >=8.3  # [osx]
 about:
   home: "https://rapgap.hepforge.org"
   license: "GPL-3.0"
