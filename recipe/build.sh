@@ -3,6 +3,7 @@
 # Ensure HepMC symlink
 [ -f "$PREFIX/lib/libHepMC2.so" ] && ln -sf libHepMC2.so "$PREFIX/lib/libHepMC.so"
 [ -f "$PREFIX/lib/libHepMC3.so" ] && ln -sf libHepMC3.so "$PREFIX/lib/libHepMC.so"
+[ -f "$PREFIX/lib/libHepMC3.dylib" ] && ln -sf libHepMC3.dylib "$PREFIX/lib/libHepMC.dylib"   # macOS
 
 # Set CXX standard flags
 export ROOT_CXX_STANDARD=$(root-config --cflags | sed -n 's/.*-std=c++\([0-9]*\).*/\1/p')
